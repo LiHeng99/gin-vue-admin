@@ -44,29 +44,8 @@ func (dbInfoService *DbInfoService) LinkDbUrlFunc(id uint) (dbInfo db_tools.DbIn
 	err = global.GVA_DB.Where("id = ?", id).First(&dbInfo).Error
 	// var db *sql.DB
 	OpenDb(dbInfo)
-	fmt.Print("连接成功")
-	//rows, err := db.Query("select id,username,password from sys_user")
-	//if err != nil {
-	//	// handle error
-	//}
-	//for rows.Next() {
-	//	var id string
-	//	var username string
-	//	var password string
-	//	// ... other columns
-	//	err := rows.Scan(&id, &username, &password /* other columns */)
-	//	if err != nil {
-	//		fmt.Println(username, password)
-	//	}
-	//	// use col1, col2, ...
-	//}
-	//defer rows.Close()
-	//if err := rows.Err(); err != nil {
-	//	// handle error
-	//}
-
+	fmt.Print("连接成功", dbInfo.DbName)
 	return
-
 }
 
 // GetDbInfo 根据id获取DbInfo记录

@@ -3,23 +3,22 @@ package db_tools
 import (
 	"database/sql"
 	"fmt"
+	"strconv"
 	"sync"
 
 	_ "github.com/go-sql-driver/mysql"
 	// _ "github.com/lib/pq"
 
 	"github.com/flipped-aurora/gin-vue-admin/server/model/db_tools"
-
 )
 
-var dbMap map[string]*sql.DB
+var dbMap = make(map[string]*sql.DB)
 
 var dbMapMutex sync.RWMutex
 
 func SetDB(key string, db *sql.DB) {
 	dbMapMutex.Lock()
 	defer dbMapMutex.Unlock()
-
 	dbMap[key] = db
 }
 
@@ -78,10 +77,10 @@ func DatabaseFactory(dbType, dsn string) Database {
 }
 
 func OpenDb(dbInfo db_tools.DbInfo) *sql.DB {
-	dbMap = make(map[string]*sql.DB)
+	//dbMap = make(map[string]*sql.DB)
 	// Assume the database driver is MySQL
 	// Please replace the DSN string with your own settings
-	db, err := sql.Open("mysql", "root:root@tcp(192.168.2.251:3306)/powerstation?charset=utf8")
+	db, err := sql.Open("mysql", dbInfo.DbUrl)
 	if err != nil {
 		fmt.Println("Error connecting to the database: ", err)
 		return nil
@@ -94,7 +93,7 @@ func OpenDb(dbInfo db_tools.DbInfo) *sql.DB {
 		return nil
 	}
 
-	SetDB(dbInfo.DbName, db)
+	SetDB(strconv.FormatUint(uint64(dbInfo.ID), 10)+dbInfo.DbName, db)
 	return db
 }
 
