@@ -4,11 +4,12 @@ import (
 	"errors"
 	"strconv"
 
+	"gorm.io/gorm"
+
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/common/request"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/system"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/system/response"
-	"gorm.io/gorm"
 )
 
 var ErrRoleExistence = errors.New("存在相同角色id")

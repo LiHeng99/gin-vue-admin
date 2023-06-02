@@ -3,11 +3,10 @@ package system
 import (
 	"context"
 
-	"go.uber.org/zap"
-
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/system"
 	"github.com/flipped-aurora/gin-vue-admin/server/utils"
+	"go.uber.org/zap"
 )
 
 type JwtService struct{}
