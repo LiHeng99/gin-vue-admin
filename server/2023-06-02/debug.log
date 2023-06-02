@@ -1,0 +1,11 @@
+2023/06/02 - 18:05:26.981	debug	create directoryautocode_template\server\tableInf\api
+2023/06/02 - 18:05:26.983	debug	create directoryautocode_template\server\tableInf\model
+2023/06/02 - 18:05:26.984	debug	create directoryautocode_template\server\tableInf\request
+2023/06/02 - 18:05:26.984	debug	create directoryautocode_template\server\tableInf\router
+2023/06/02 - 18:05:26.984	debug	create directoryautocode_template\server\tableInf\service
+2023/06/02 - 18:05:26.985	debug	create directoryautocode_template\subcontract\tableInf\api_enter
+2023/06/02 - 18:05:26.985	debug	create directoryautocode_template\subcontract\tableInf\router_enter
+2023/06/02 - 18:05:26.985	debug	create directoryautocode_template\subcontract\tableInf\service_enter
+2023/06/02 - 18:05:26.986	debug	create directoryautocode_template\web\tableInf\api
+2023/06/02 - 18:05:26.986	debug	create directoryautocode_template\web\tableInf\form
+2023/06/02 - 18:05:26.987	debug	create directoryautocode_template\web\tableInf\table

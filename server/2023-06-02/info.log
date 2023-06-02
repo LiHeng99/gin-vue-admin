@@ -6,3 +6,7 @@
 2023/06/02 - 17:17:20.655	info	register swagger handler
 2023/06/02 - 17:17:20.670	info	router register success
 2023/06/02 - 17:17:20.671	info	server run success on 	{"address": ":8888"}
+2023/06/02 - 17:49:49.362	info	register table success
+2023/06/02 - 17:49:49.392	info	register swagger handler
+2023/06/02 - 17:49:49.413	info	router register success
+2023/06/02 - 17:49:49.418	info	server run success on 	{"address": ":8888"}
