@@ -1,0 +1,21 @@
+# .air.toml
+[build]
+cmd = "go build -o ./tmp/main C:/work/go/gin-vue-admin/server/main.go"
+bin = "tmp/main"
+full_bin = "tmp/main"
+include_ext = ["go", "tpl", "tmpl", "html"]
+exclude_dir = ["assets", "tmp", "vendor"]
+exclude_file = []
+
+[log]
+level = "debug"
+output = "logs/air_logs.log"
+
+[color]
+main = "magenta"
+watcher = "cyan"
+build = "yellow"
+runner = "green"
+
+[misc]
+clean_on_exit = true
