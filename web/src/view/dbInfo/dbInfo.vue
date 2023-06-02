@@ -478,7 +478,7 @@ const deleteDbInfoFunc = async (row) => {
 
 // 弹窗控制标记
 const dialogFormVisible = ref(false);
-const tableInfoDialogVisible = ref(true);
+const tableInfoDialogVisible = ref(false);
 
 // 打开弹窗
 const openDialog = () => {
