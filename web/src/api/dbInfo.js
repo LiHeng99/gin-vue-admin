@@ -104,3 +104,20 @@ export const linkDbUrl = (params) => {
     params
   })
 }
+
+//连接数据库
+export const getTableInfoList = (params) => {
+  return service({
+    url: '/tableInfo/getTableInfoList',
+    method: 'get',
+    params
+  })
+}
+//批量保存数据表数据
+export const saveTableInfoList = (data) => {
+  return service({
+    url: '/tableInfo/saveTableInfoList',
+    method: 'post',
+    data
+  })
+}

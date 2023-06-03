@@ -27,9 +27,7 @@
           <el-input v-model="formData.createTime" :clearable="true" placeholder="请输入" />
         </el-form-item>
         <el-form-item label="数据库id:" prop="dbId">
-          <el-select v-model="formData.dbId" placeholder="请选择" :clearable="true">
-            <el-option v-for="(item,key) in intOptions" :key="key" :label="item.label" :value="item.value" />
-          </el-select>
+          <el-input v-model.number="formData.dbId" :clearable="true" placeholder="请输入" />
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="save">保存</el-button>
@@ -42,16 +40,16 @@
 
 <script>
 export default {
-  name: 'TableInfo'
+  name: 'TableInfosModel'
 }
 </script>
 
 <script setup>
 import {
-  createTableInfo,
-  updateTableInfo,
-  findTableInfo
-} from '@/api/tableInf'
+  createTableInfosModel,
+  updateTableInfosModel,
+  findTableInfosModel
+} from '@/api/tableInfos'
 
 // 自动获取字典
 import { getDictFunc } from '@/utils/format'
@@ -62,7 +60,6 @@ const route = useRoute()
 const router = useRouter()
 
 const type = ref('')
-const intOptions = ref([])
 const formData = ref({
             tableName: '',
             tableComment: '',
@@ -72,7 +69,7 @@ const formData = ref({
             tableRows: 0,
             dataLength: 0,
             createTime: '',
-            dbId: undefined,
+            dbId: 0,
         })
 // 验证规则
 const rule = reactive({
@@ -81,7 +78,7 @@ const rule = reactive({
                    message: '',
                    trigger: ['input','blur'],
                }],
-               tableSchema : [{
+               dbId : [{
                    required: true,
                    message: '',
                    trigger: ['input','blur'],
@@ -94,15 +91,14 @@ const elFormRef = ref()
 const init = async () => {
  // 建议通过url传参获取目标数据ID 调用 find方法进行查询数据操作 从而决定本页面是create还是update 以下为id作为url参数示例
     if (route.query.id) {
-      const res = await findTableInfo({ ID: route.query.id })
+      const res = await findTableInfosModel({ ID: route.query.id })
       if (res.code === 0) {
-        formData.value = res.data.reable_info
+        formData.value = res.data.retableInfoModel
         type.value = 'update'
       }
     } else {
       type.value = 'create'
     }
-    intOptions.value = await getDictFunc('int')
 }
 
 init()
@@ -113,13 +109,13 @@ const save = async() => {
             let res
            switch (type.value) {
              case 'create':
-               res = await createTableInfo(formData.value)
+               res = await createTableInfosModel(formData.value)
                break
              case 'update':
-               res = await updateTableInfo(formData.value)
+               res = await updateTableInfosModel(formData.value)
                break
              default:
-               res = await createTableInfo(formData.value)
+               res = await createTableInfosModel(formData.value)
                break
            }
            if (res.code === 0) {

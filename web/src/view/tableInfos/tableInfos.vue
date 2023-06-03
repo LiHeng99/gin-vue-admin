@@ -41,11 +41,11 @@
          <el-input v-model="searchInfo.createTime" placeholder="搜索条件" />
 
         </el-form-item>
-           <el-form-item label="数据库id" prop="dbId">
-            <el-select v-model="searchInfo.dbId" clearable placeholder="请选择" @clear="()=>{searchInfo.dbId=undefined}">
-              <el-option v-for="(item,key) in intOptions" :key="key" :label="item.label" :value="item.value" />
-            </el-select>
-            </el-form-item>
+        <el-form-item label="数据库id">
+            
+             <el-input v-model.number="searchInfo.dbId" placeholder="搜索条件" />
+
+        </el-form-item>
         <el-form-item>
           <el-button type="primary" icon="search" @click="onSubmit">查询</el-button>
           <el-button icon="refresh" @click="onReset">重置</el-button>
@@ -73,13 +73,12 @@
         :data="tableData"
         row-key="ID"
         @selection-change="handleSelectionChange"
-        @sort-change="sortChange"
         >
         <el-table-column type="selection" width="55" />
         <el-table-column align="left" label="日期" width="180">
             <template #default="scope">{{ formatDate(scope.row.CreatedAt) }}</template>
         </el-table-column>
-        <el-table-column sortable align="left" label="表名称" prop="tableName" width="120" />
+        <el-table-column align="left" label="表名称" prop="tableName" width="120" />
         <el-table-column align="left" label="表注释" prop="tableComment" width="120" />
         <el-table-column align="left" label="数据库名称" prop="tableSchema" width="120" />
         <el-table-column align="left" label="表类型" prop="tableType" width="120" />
@@ -87,14 +86,10 @@
         <el-table-column align="left" label="行数" prop="tableRows" width="120" />
         <el-table-column align="left" label="数据长度" prop="dataLength" width="120" />
         <el-table-column align="left" label="创建时间" prop="createTime" width="120" />
-        <el-table-column align="left" label="数据库id" prop="dbId" width="120">
-            <template #default="scope">
-            {{ filterDict(scope.row.dbId,intOptions) }}
-            </template>
-        </el-table-column>
+        <el-table-column align="left" label="数据库id" prop="dbId" width="120" />
         <el-table-column align="left" label="按钮组">
             <template #default="scope">
-            <el-button type="primary" link icon="edit" class="table-button" @click="updateTableInfoFunc(scope.row)">变更</el-button>
+            <el-button type="primary" link icon="edit" class="table-button" @click="updateTableInfosModelFunc(scope.row)">变更</el-button>
             <el-button type="primary" link icon="delete" @click="deleteRow(scope.row)">删除</el-button>
             </template>
         </el-table-column>
@@ -138,9 +133,7 @@
           <el-input v-model="formData.createTime" :clearable="true"  placeholder="请输入" />
         </el-form-item>
         <el-form-item label="数据库id:"  prop="dbId" >
-          <el-select v-model="formData.dbId" placeholder="请选择" style="width:100%" :clearable="true" >
-            <el-option v-for="(item,key) in intOptions" :key="key" :label="item.label" :value="item.value" />
-          </el-select>
+          <el-input v-model.number="formData.dbId" :clearable="true" placeholder="请输入" />
         </el-form-item>
       </el-form>
       <template #footer>
@@ -155,19 +148,19 @@
 
 <script>
 export default {
-  name: 'TableInfo'
+  name: 'TableInfosModel'
 }
 </script>
 
 <script setup>
 import {
-  createTableInfo,
-  deleteTableInfo,
-  deleteTableInfoByIds,
-  updateTableInfo,
-  findTableInfo,
-  getTableInfoList
-} from '@/api/tableInf'
+  createTableInfosModel,
+  deleteTableInfosModel,
+  deleteTableInfosModelByIds,
+  updateTableInfosModel,
+  findTableInfosModel,
+  getTableInfosModelList
+} from '@/api/tableInfos'
 
 // 全量引入格式化工具 请按需保留
 import { getDictFunc, formatDate, formatBoolean, filterDict } from '@/utils/format'
@@ -175,7 +168,6 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 import { ref, reactive } from 'vue'
 
 // 自动化生成的字典（可能为空）以及字段
-const intOptions = ref([])
 const formData = ref({
         tableName: '',
         tableComment: '',
@@ -185,7 +177,7 @@ const formData = ref({
         tableRows: 0,
         dataLength: 0,
         createTime: '',
-        dbId: undefined,
+        dbId: 0,
         })
 
 // 验证规则
@@ -195,7 +187,7 @@ const rule = reactive({
                    message: '',
                    trigger: ['input','blur'],
                }],
-               tableSchema : [{
+               dbId : [{
                    required: true,
                    message: '',
                    trigger: ['input','blur'],
@@ -211,12 +203,6 @@ const total = ref(0)
 const pageSize = ref(10)
 const tableData = ref([])
 const searchInfo = ref({})
-// 排序
-const sortChange = ({ prop, order }) => {
-  searchInfo.value.sort = prop
-  searchInfo.value.order = order
-  getTableData()
-}
 
 // 重置
 const onReset = () => {
@@ -245,7 +231,7 @@ const handleCurrentChange = (val) => {
 
 // 查询
 const getTableData = async() => {
-  const table = await getTableInfoList({ page: page.value, pageSize: pageSize.value, ...searchInfo.value })
+  const table = await getTableInfosModelList({ page: page.value, pageSize: pageSize.value, ...searchInfo.value })
   if (table.code === 0) {
     tableData.value = table.data.list
     total.value = table.data.total
@@ -260,7 +246,6 @@ getTableData()
 
 // 获取需要的字典 可能为空 按需保留
 const setOptions = async () =>{
-    intOptions.value = await getDictFunc('int')
 }
 
 // 获取需要的字典 可能为空 按需保留
@@ -281,7 +266,7 @@ const deleteRow = (row) => {
         cancelButtonText: '取消',
         type: 'warning'
     }).then(() => {
-            deleteTableInfoFunc(row)
+            deleteTableInfosModelFunc(row)
         })
     }
 
@@ -303,7 +288,7 @@ const onDelete = async() => {
         multipleSelection.value.map(item => {
           ids.push(item.ID)
         })
-      const res = await deleteTableInfoByIds({ ids })
+      const res = await deleteTableInfosModelByIds({ ids })
       if (res.code === 0) {
         ElMessage({
           type: 'success',
@@ -321,19 +306,19 @@ const onDelete = async() => {
 const type = ref('')
 
 // 更新行
-const updateTableInfoFunc = async(row) => {
-    const res = await findTableInfo({ ID: row.ID })
+const updateTableInfosModelFunc = async(row) => {
+    const res = await findTableInfosModel({ ID: row.ID })
     type.value = 'update'
     if (res.code === 0) {
-        formData.value = res.data.reable_info
+        formData.value = res.data.retableInfoModel
         dialogFormVisible.value = true
     }
 }
 
 
 // 删除行
-const deleteTableInfoFunc = async (row) => {
-    const res = await deleteTableInfo({ ID: row.ID })
+const deleteTableInfosModelFunc = async (row) => {
+    const res = await deleteTableInfosModel({ ID: row.ID })
     if (res.code === 0) {
         ElMessage({
                 type: 'success',
@@ -367,7 +352,7 @@ const closeDialog = () => {
         tableRows: 0,
         dataLength: 0,
         createTime: '',
-        dbId: undefined,
+        dbId: 0,
         }
 }
 // 弹窗确定
@@ -377,13 +362,13 @@ const enterDialog = async () => {
               let res
               switch (type.value) {
                 case 'create':
-                  res = await createTableInfo(formData.value)
+                  res = await createTableInfosModel(formData.value)
                   break
                 case 'update':
-                  res = await updateTableInfo(formData.value)
+                  res = await updateTableInfosModel(formData.value)
                   break
                 default:
-                  res = await createTableInfo(formData.value)
+                  res = await createTableInfosModel(formData.value)
                   break
               }
               if (res.code === 0) {

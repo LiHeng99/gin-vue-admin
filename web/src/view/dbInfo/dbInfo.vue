@@ -224,10 +224,11 @@
       <el-table
         :data="tableInfoList"
         style="width: 100%"
-        @selection-change="handleSelectionChange"
+        @selection-change="tableInfosHandleSelectionChange"
       >
         <el-table-column type="selection" width="55"></el-table-column>
         <el-table-column prop="tableName" label="表名称"></el-table-column>
+        <el-table-column prop="dbId" label="库连接ID"></el-table-column>
         <el-table-column prop="tableComment" label="表注释"></el-table-column>
         <el-table-column prop="tableSchema" label="表架构"></el-table-column>
         <el-table-column prop="tableType" label="表类型"></el-table-column>
@@ -237,12 +238,12 @@
         <el-table-column prop="createTime" label="创建时间"></el-table-column>
         <!-- ... 你可以添加其他列 ... -->
       </el-table>
-      <!-- <span slot="footer" class="dialog-footer">
+      <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取消</el-button>
-        <el-button type="primary" @click="dialogVisible = false"
-          >确定</el-button
+        <el-button type="primary" @click="saveTableInfoListFunc"
+          >保存</el-button
         >
-      </span> -->
+      </span>
     </el-dialog>
   </div>
 </template>
@@ -262,8 +263,9 @@ import {
   findDbInfo,
   linkDbUrl,
   getDbInfoList,
+  getTableInfoList,
+  saveTableInfoList
 } from "@/api/dbInfo";
-import { getTableInfoList } from "@/api/tableInfo";
 
 // 全量引入格式化工具 请按需保留
 import {
@@ -385,6 +387,7 @@ setOptions();
 
 // 多选数据
 const multipleSelection = ref([]);
+
 // 多选
 const handleSelectionChange = (val) => {
   multipleSelection.value = val;
@@ -403,7 +406,7 @@ const deleteRow = (row) => {
 
 // 批量删除控制标记
 const deleteVisible = ref(false);
-
+// 保存表信息多选数据
 // 多选删除
 const onDelete = async () => {
   const ids = [];
@@ -438,10 +441,41 @@ const type = ref("");
 const linkDbUrlFunc = async (row) => {
   const res = await linkDbUrl({ ID: row.ID });
   if (res.code === 0) {
-    console.log(res.data.redbInfo, "连接数据库");
+    ElMessage({
+      type: "success",
+      message: "连接数据库",
+    });
+  }else{
+    ElMessage({
+      type: "error",
+      message: "连接数据库失败",
+    });
   }
 };
 
+const tableInfosSelection = ref([]);
+// 多选
+const tableInfosHandleSelectionChange = (val) => {
+  tableInfosSelection.value = val;
+};
+
+//保存表信息
+const saveTableInfoListFunc = async () => {
+  const res = await saveTableInfoList(tableInfosSelection.value);
+  tableInfoDialogVisible.value = false;
+  if (res.code === 0) {
+    ElMessage({
+      type: "success",
+      message: "保存表信息成功",
+    });
+  }else{
+    ElMessage({
+      type: "error",
+      message: "保存表信息失败",
+    });
+  }
+};
+//查看
 const getTableInfoListFunc = async (row) => {
   const res = await getTableInfoList({ ID: row.ID });
   if (res.code === 0) {
