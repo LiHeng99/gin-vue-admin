@@ -2,9 +2,9 @@ package db_tools
 
 import (
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
+	"github.com/flipped-aurora/gin-vue-admin/server/model/tableInfos"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
-
 	_ "go.uber.org/zap"
 
 	_ "github.com/flipped-aurora/gin-vue-admin/server/global"
@@ -39,4 +39,22 @@ func (tableInfoApi *TableInfoApi) GetTableInfoList(c *gin.Context) {
 		}, "获取成功", c)
 	}
 
+}
+
+// 批量保存表信息
+func (tableInfoApi *TableInfoApi) SaveTableInfoList(c *gin.Context) {
+	var tableInfosModels []tableInfos.TableInfosModel
+	// 解析请求中的JSON数据到tableInfosModels切片中
+	if err := c.ShouldBindJSON(&tableInfosModels); err != nil {
+		//c.JSON(http.StatusBadRequest, gin.H{"error": "无效的JSON数据"})
+		response.FailWithMessage("无效的JSON数据", c)
+	}
+	// 在这里执行保存tableInfosModels的逻辑，可以调用数据库操作等
+	if err := dbInfoService.SaveTableInfoList(tableInfosModels); err != nil {
+		response.FailWithMessage("表信息保存失败", c)
+	} else {
+		response.OkWithMessage("表信息保存成功", c)
+	}
+	// 返回成功的响应
+	//c.JSON(http.StatusOK, gin.H{"message": "表信息保存成功"})
 }

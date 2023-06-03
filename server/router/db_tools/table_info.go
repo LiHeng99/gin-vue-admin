@@ -15,7 +15,8 @@ func (s *TableInfoRouter) InitTableInfoRouter(Router *gin.RouterGroup) {
 	tableInfoRouterWithoutRecord := Router.Group("tableInfo")
 	var tableInfoApi = v1.ApiGroupApp.Db_toolsApiGroup.TableInfoApi
 	{
-		tableInfoRouter.POST("createDbInfo", tableInfoApi.GetTableInfoList) // 新建DbInfo
+		//tableInfoRouter.POST("createDbInfo", tableInfoApi.GetTableInfoList) // 新建DbInfo
+		tableInfoRouter.POST("saveTableInfoList", tableInfoApi.SaveTableInfoList) // 批量保存表结构
 	}
 	{
 		tableInfoRouterWithoutRecord.GET("getTableInfoList", tableInfoApi.GetTableInfoList) // 获取DbInfo列表

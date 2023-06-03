@@ -6,6 +6,7 @@ import (
 	"github.com/flipped-aurora/gin-vue-admin/server/model/common/request"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/db_tools"
 	db_toolsReq "github.com/flipped-aurora/gin-vue-admin/server/model/db_tools/request"
+	"github.com/flipped-aurora/gin-vue-admin/server/model/tableInfos"
 )
 
 type DbInfoService struct {
@@ -46,6 +47,12 @@ func (dbInfoService *DbInfoService) LinkDbUrlFunc(id uint) (dbInfo db_tools.DbIn
 	OpenDb(dbInfo)
 	fmt.Print("连接成功", dbInfo.DbName)
 	return
+}
+
+// 批量保存
+func (dbInfoService *DbInfoService) SaveTableInfoList(tableInfos []tableInfos.TableInfosModel) (err error) {
+	err = global.GVA_DB.Save(&tableInfos).Error
+	return err
 }
 
 // GetDbInfo 根据id获取DbInfo记录

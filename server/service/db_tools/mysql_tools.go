@@ -3,6 +3,7 @@ package db_tools
 import (
 	"fmt"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/db_tools"
+	"github.com/flipped-aurora/gin-vue-admin/server/model/tableInfos"
 	_ "github.com/go-sql-driver/mysql"
 	"strconv"
 )
@@ -10,7 +11,7 @@ import (
 type TableInfoService struct {
 }
 
-func (TableInfoService *TableInfoService) GetTableList(dbInfo db_tools.DbInfo) (list []db_tools.TableInfo, err error) {
+func (TableInfoService *TableInfoService) GetTableList(dbInfo db_tools.DbInfo) (list []tableInfos.TableInfosModel, err error) {
 	db, flag := GetDB(strconv.FormatUint(uint64(dbInfo.ID), 10) + dbInfo.DbName)
 	if flag {
 		rows, err := db.Query("SELECT TABLE_NAME, TABLE_COMMENT, TABLE_SCHEMA, TABLE_TYPE, ENGINE,TABLE_ROWS, DATA_LENGTH, CREATE_TIME FROM information_schema.tables WHERE TABLE_SCHEMA = " + "'" + dbInfo.DbName + "';")
@@ -19,8 +20,8 @@ func (TableInfoService *TableInfoService) GetTableList(dbInfo db_tools.DbInfo) (
 			return nil, err
 		}
 		for rows.Next() {
-			var table db_tools.TableInfo
-
+			var table tableInfos.TableInfosModel
+			table.DbId = dbInfo.ID
 			err := rows.Scan(&table.TableName, &table.TableComment, &table.TableSchema, &table.TableType, &table.Engine, &table.TableRows, &table.DataLength, &table.CreateTime)
 			if err != nil {
 				// handle error

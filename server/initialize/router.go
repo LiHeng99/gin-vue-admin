@@ -66,8 +66,18 @@ func Routers() *gin.Engine {
 		db_toolsRouter.InitTableInfoRouter(PrivateGroup)
 	}
 	{
-		table_infoRouter := router.RouterGroupApp.Table_info
-		table_infoRouter.InitTableInfoRouter(PrivateGroup)
+		tableInfosRouter := router.RouterGroupApp.TableInfos
+		tableInfosRouter.InitTableInfosModelRouter(PrivateGroup)
+	}
+	{
+
+	}
+	{
+
+	}
+	{
+		syncDataRouter := router.RouterGroupApp.SyncData
+		syncDataRouter.InitSyncDataModelRouter(PrivateGroup)
 	}
 
 	global.GVA_LOG.Info("router register success")
