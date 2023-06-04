@@ -25,5 +25,6 @@ func (s *DbInfoRouter) InitDbInfoRouter(Router *gin.RouterGroup) {
 		dbInfoRouterWithoutRecord.GET("findDbInfo", dbInfoApi.FindDbInfo)       // 根据ID获取DbInfo
 		dbInfoRouterWithoutRecord.GET("getDbInfoList", dbInfoApi.GetDbInfoList) // 获取DbInfo列表
 		dbInfoRouterWithoutRecord.GET("linkDbUrl", dbInfoApi.LinkDbUrl)         // 连接数据库
+		dbInfoRouterWithoutRecord.GET("saveDataBase", dbInfoApi.SaveDataBase)   // 连接数据库
 	}
 }

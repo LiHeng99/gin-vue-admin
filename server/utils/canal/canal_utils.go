@@ -1,54 +1,54 @@
 package canal
 
-//import (
-//	client "github.com/CanalClient/canal-go/client"
-//	"github.com/CanalClient/canal-go/protocol"
-//)
-//
-//func Canal() {
-//	cfg := client.NewDefaultConfig()
-//	cfg.Addr = "your-canal-server-address"
-//	cfg.User = "your-username"
-//	cfg.Password = "your-password"
-//	cfg.Destination = "your-destination"
-//
-//	canalClient := client.NewCanalClient(cfg)
-//	err := canalClient.Connect()
-//	if err != nil {
-//		// 处理连接错误
-//		return
-//	}
-//
-//	err = canalClient.Subscribe()
-//	if err != nil {
-//		// 处理订阅错误
-//		return
-//	}
-//
-//	for {
-//		message, err := canalClient.Get(100, nil, nil)
-//		if err != nil {
-//			// 处理获取消息错误
-//			continue
-//		}
-//
-//		for _, entry := range message.Entries {
-//			if entry.GetEntryType() == protocol.EntryType_ROWDATA {
-//				rowChange := new(protocol.RowChange)
-//				err := rowChange.Unmarshal(entry.GetStoreValue())
-//				if err != nil {
-//					// 处理解析RowChange错误
-//					continue
-//				}
-//
-//				// 处理增量变更事件
-//				for _, rowData := range rowChange.GetRowDatas() {
-//					// 处理行级变更数据
-//				}
-//			}
-//		}
-//
-//		// 确认消息已处理
-//		canalClient.Ack(message.GetId())
-//	}
-//}
+import (
+	"fmt"
+	"github.com/flipped-aurora/gin-vue-admin/server/model/db_tools"
+	"os"
+	"os/exec"
+	"path/filepath"
+	"strconv"
+	"time"
+)
+
+func SaveDataBaseFunc(info db_tools.DbInfo) {
+	// 定义导出文件的路径和文件名
+	// 获取当前项目路径
+	projectPath, err := os.Getwd()
+	if err != nil {
+		fmt.Println("获取项目路径失败:", err)
+		return
+	}
+	currentTime := time.Now().Unix()
+	// 定义导出文件的相对路径和文件名
+	fileName := info.DbName + "-" + strconv.FormatInt(currentTime, 10) + ".sql"
+	outputPath := filepath.Join(projectPath, "sql")
+	outputFile := filepath.Join(outputPath, fileName)
+
+	// 创建输出文件所在的目录
+	err = os.MkdirAll(outputPath, 0755)
+	if err != nil {
+		fmt.Println("创建导出目录失败:", err)
+		return
+	}
+
+	// 定义 mysqldump 命令及参数
+	cmd := exec.Command("mysqldump", "-u", info.DbUserName, "-p"+info.DbPassword, "-h", "127.0.0.1", info.DbName)
+
+	// 将输出重定向到文件
+	output, err := os.Create(outputFile)
+	if err != nil {
+		fmt.Println("创建导出文件失败:", err)
+		return
+	}
+	defer output.Close()
+	cmd.Stdout = output
+
+	// 执行导出命令
+	err = cmd.Run()
+	if err != nil {
+		fmt.Println("导出数据库失败:", err)
+		return
+	}
+
+	fmt.Println("数据库导出完成")
+}

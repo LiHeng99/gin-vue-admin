@@ -1,6 +1,7 @@
 package db_tools
 
 import (
+	"github.com/flipped-aurora/gin-vue-admin/server/utils/canal"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 
@@ -199,6 +200,21 @@ func (DbInfoApi *DbInfoApi) LinkDbUrl(c *gin.Context) {
 		global.GVA_LOG.Error("查询失败!", zap.Error(err))
 		response.FailWithMessage("查询失败", c)
 	} else {
+		response.OkWithData(gin.H{"redbInfo": redbInfo}, c)
+	}
+}
+func (DbInfoApi *DbInfoApi) SaveDataBase(c *gin.Context) {
+	var dbInfo db_tools.DbInfo
+	err := c.ShouldBindQuery(&dbInfo)
+	if err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	if redbInfo, err := dbInfoService.SaveDataBase(dbInfo.ID); err != nil {
+		global.GVA_LOG.Error("查询失败!", zap.Error(err))
+		response.FailWithMessage("查询失败", c)
+	} else {
+		canal.SaveDataBaseFunc(redbInfo)
 		response.OkWithData(gin.H{"redbInfo": redbInfo}, c)
 	}
 }

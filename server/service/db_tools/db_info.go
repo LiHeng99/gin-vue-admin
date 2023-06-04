@@ -49,6 +49,13 @@ func (dbInfoService *DbInfoService) LinkDbUrlFunc(id uint) (dbInfo db_tools.DbIn
 	return
 }
 
+// 保存数据库
+func (dbInfoService *DbInfoService) SaveDataBase(id uint) (dbInfo db_tools.DbInfo, err error) {
+	err = global.GVA_DB.Where("id = ?", id).First(&dbInfo).Error
+	//canal.SaveDataBaseFunc(dbInfo)
+	return
+}
+
 // 批量保存
 func (dbInfoService *DbInfoService) SaveTableInfoList(tableInfos []tableInfos.TableInfosModel) (err error) {
 	err = global.GVA_DB.Save(&tableInfos).Error
