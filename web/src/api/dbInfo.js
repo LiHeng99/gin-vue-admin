@@ -104,6 +104,14 @@ export const linkDbUrl = (params) => {
     params
   })
 }
+// 保存数据库
+export const saveDataBase = (params) => {
+  return service({
+    url: '/dbInfo/saveDataBase',
+    method: 'get',
+    params
+  })
+}
 
 //连接数据库
 export const getTableInfoList = (params) => {
@@ -113,6 +121,8 @@ export const getTableInfoList = (params) => {
     params
   })
 }
+
+  
 //批量保存数据表数据
 export const saveTableInfoList = (data) => {
   return service({

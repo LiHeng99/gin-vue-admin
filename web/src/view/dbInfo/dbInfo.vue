@@ -132,6 +132,13 @@
               link
               icon="edit"
               class="table-button"
+              @click="saveDataBaseFunc(scope.row)"
+              >备份数据</el-button>
+            <el-button
+              type="primary"
+              link
+              icon="edit"
+              class="table-button"
               @click="updateDbInfoFunc(scope.row)"
               >变更</el-button
             >
@@ -264,7 +271,8 @@ import {
   linkDbUrl,
   getDbInfoList,
   getTableInfoList,
-  saveTableInfoList
+  saveTableInfoList,
+  saveDataBase
 } from "@/api/dbInfo";
 
 // 全量引入格式化工具 请按需保留
@@ -449,6 +457,21 @@ const linkDbUrlFunc = async (row) => {
     ElMessage({
       type: "error",
       message: "连接数据库失败",
+    });
+  }
+};
+//备份数据
+const saveDataBaseFunc = async (row) => {
+  const res = await saveDataBase({ ID: row.ID });
+  if (res.code === 0) {
+    ElMessage({
+      type: "success",
+      message: "备份数据成功",
+    });
+  }else{
+    ElMessage({
+      type: "error",
+      message: "备份数据失败",
     });
   }
 };
