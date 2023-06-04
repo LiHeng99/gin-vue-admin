@@ -95,3 +95,12 @@ export const getSyncDataModelList = (params) => {
     params
   })
 }
+
+//executeSyncData
+export const executeSyncData = (params) => {
+  return service({
+    url: '/syncDataTask/executeSyncData',
+    method: 'get',
+    params
+  })
+}

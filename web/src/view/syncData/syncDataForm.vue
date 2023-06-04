@@ -21,11 +21,11 @@
             <el-option v-for="(item,key) in SyncDirectionOptions" :key="key" :label="item.label" :value="item.value" />
           </el-select>
         </el-form-item>
-        <el-form-item label="描述:" prop="readme">
-          <el-input v-model="formData.readme" :clearable="true" placeholder="请输入" />
-        </el-form-item>
         <el-form-item label="表信息ID:" prop="tableInfoId">
           <el-input v-model="formData.tableInfoId" :clearable="true" placeholder="请输入" />
+        </el-form-item>
+        <el-form-item label="描述:" prop="readme">
+          <el-input v-model="formData.readme" :clearable="true" placeholder="请输入" />
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="save">保存</el-button>

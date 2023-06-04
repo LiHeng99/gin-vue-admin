@@ -79,13 +79,15 @@
             {{ filterDict(scope.row.syncDirection,SyncDirectionOptions) }}
             </template>
         </el-table-column>
-        <el-table-column align="left" label="描述" prop="readme" width="120" />
+        <el-table-column align="left" label="匹配字段" prop="matchFields" width="120"/>
+        <el-table-column align="left" label="匹配条件" prop="matchingCondition" width="120"/>
         <el-table-column align="left" label="表信息ID" prop="tableInfoId" width="120" />
+        <el-table-column align="left" label="描述" prop="readme" width="120" />
         <el-table-column align="left" label="按钮组">
             <template #default="scope">
             <el-button type="primary" link icon="edit" class="table-button" @click="updateSyncDataModelFunc(scope.row)">变更</el-button>
             <el-button type="primary" link icon="delete" @click="deleteRow(scope.row)">删除</el-button>
-            <el-button type="primary" link icon="link" @click="execute(scope.row)">执行一次</el-button>
+            <el-button type="primary" link icon="link" @click="executeSyncDataFunc(scope.row)">执行一次</el-button>
             </template>
         </el-table-column>
         </el-table>
@@ -130,6 +132,14 @@
         <el-form-item label="表信息ID:"  prop="tableInfoId" @click="getTableInfosModelListFunc">
           <el-input v-model="formData.tableInfoId" :clearable="true"  placeholder="请输入" />
         </el-form-item>
+        <el-form-item label="匹配字段:"  prop="matchFields">
+          <el-input v-model="formData.matchFields" :clearable="true"  placeholder="请输入" />
+        </el-form-item>
+        <el-form-item label="匹配条件:"  prop="matchingCondition" >
+          <el-select v-model="formData.matchingCondition" placeholder="请选择" style="width:100%" :clearable="true" >
+            <el-option v-for="(item,key) in MatchingConditionOptions" :key="key" :label="item.label" :value="item.label" />
+          </el-select>
+        </el-form-item>
         <el-form-item label="描述:"  prop="readme" >
           <el-input v-model="formData.readme" :clearable="true"  placeholder="请输入" />
         </el-form-item>
@@ -166,7 +176,6 @@
         <el-table-column prop="tableRows" label="行数"></el-table-column>
         <el-table-column prop="dataLength" label="数据长度"></el-table-column>
         <el-table-column prop="createTime" label="创建时间"></el-table-column>
-        <!-- ... 你可以添加其他列 ... -->
       </el-table>
       <span slot="footer" class="dialog-footer">
         <el-button @click="tableInfoDialogVisible = false">取消</el-button>
@@ -191,7 +200,8 @@ import {
   deleteSyncDataModelByIds,
   updateSyncDataModel,
   findSyncDataModel,
-  getSyncDataModelList
+  getSyncDataModelList,
+  executeSyncData
 } from '@/api/syncData'
 
 // 引入连接信息接口
@@ -206,12 +216,15 @@ import { ref, reactive } from 'vue'
 // 自动化生成的字典（可能为空）以及字段
 const syncTypeOptions = ref([])
 const SyncDirectionOptions = ref([])
+const MatchingConditionOptions = ref([])
 const formData = ref({
         taskName: '',
         sourceDbId: undefined,
         targetDbId: undefined,
         syncType: undefined,
         syncDirection: undefined,
+        matchingCondition: undefined,
+        matchFields: undefined,
         readme: '',
         tableInfoId: '',
         })
@@ -248,6 +261,13 @@ const rule = reactive({
                    message: '',
                    trigger: ['input','blur'],
                }],
+
+                readme : [{
+                    required: true,
+                    message: '',
+                    trigger: ['input','blur'],
+                }],
+                
 })
 
 const elFormRef = ref()
@@ -334,7 +354,16 @@ const getTableInfosModelListFunc = async() => {
     // tableInfosModelOptions.value = res.data.list
   }
 }
-
+//executeSyncData
+const executeSyncDataFunc = async(row) => {
+  const res = await executeSyncData({ ID: row.ID })
+  if (res.code === 0) {
+    ElMessage({
+      type: 'success',
+      message: '执行成功'
+    })
+  }
+}
 getTableData()
 
 // ============== 表格控制部分结束 ===============
@@ -343,6 +372,7 @@ getTableData()
 const setOptions = async () =>{
     syncTypeOptions.value = await getDictFunc('syncType')
     SyncDirectionOptions.value = await getDictFunc('SyncDirection')
+    MatchingConditionOptions.value = await getDictFunc('matchingCondition')
     getDbInfoListFunc()
     // getTableInfosModelListFunc()
 }
